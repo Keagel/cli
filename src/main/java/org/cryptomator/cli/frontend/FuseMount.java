@@ -16,10 +16,14 @@ public class FuseMount {
 	private Path vaultRoot;
 	private Path mountPoint;
 	private Mount mnt;
+	private int uid;
+	private int gid;
 
-	public FuseMount(Path vaultRoot, Path mountPoint) {
+	public FuseMount(Path vaultRoot, Path mountPoint, int uid, int gid) {
 		this.vaultRoot = vaultRoot;
 		this.mountPoint = mountPoint;
+		this.uid = uid;
+		this.gid = gid;
 		this.mnt = null;
 	}
 
@@ -30,9 +34,15 @@ public class FuseMount {
 		}
 
 		try {
+			String[] flags = new String[]{
+					"-ouid=" + this.uid,
+					"-ogid=" + this.gid,
+					"-oauto_unmount"
+			};
+
 			Mounter mounter = FuseMountFactory.getMounter();
 			EnvironmentVariables envVars = EnvironmentVariables.create() //
-					.withFlags(mounter.defaultMountFlags()) //
+					.withFlags(flags) //
 					.withFileNameTranscoder(mounter.defaultFileNameTranscoder()) //
 					.withMountPoint(mountPoint).build();
 			mnt = mounter.mount(vaultRoot, envVars);

@@ -79,6 +79,20 @@ public class Args {
 				.valueSeparator() //
 				.hasArgs() //
 				.build());
+		OPTIONS.addOption(Option.builder() //
+				.longOpt("uid") //
+				.argName("user id used for the mount") //
+				.desc("User ID used for the mount") //
+				.valueSeparator() //
+				.hasArg() //
+				.build());
+		OPTIONS.addOption(Option.builder() //
+				.longOpt("gid") //
+				.argName("group id used for the mount") //
+				.desc("Group ID used for the mount") //
+				.valueSeparator() //
+				.hasArg() //
+				.build());
 	}
 
 	private final String bindAddr;
@@ -89,6 +103,8 @@ public class Args {
 	private final Properties vaultPasswordFiles;
 	private final Map<String, PasswordStrategy> passwordStrategies;
 	private final Properties fuseMountPoints;
+	private final int uid;
+	private final int gid;
 
 	public Args(CommandLine commandLine) throws ParseException {
 		if (commandLine.hasOption("bind") && commandLine.hasOption("port")) {
@@ -105,6 +121,9 @@ public class Args {
 		this.vaultPasswordFiles = commandLine.getOptionProperties("passwordfile");
 		this.passwordStrategies = new HashMap<>();
 		this.fuseMountPoints = commandLine.getOptionProperties("fusemount");
+
+		this.uid = Integer.parseInt(commandLine.getOptionValue("uid", "0"));
+		this.gid = Integer.parseInt(commandLine.getOptionValue("gid", "0"));
 	}
 
 	public boolean hasValidWebDavConf() {
@@ -161,5 +180,13 @@ public class Args {
 		}
 		Path mountPointPath = Paths.get(mountPoint);
 		return mountPointPath;
+	}
+
+	public int getUid() {
+		return uid;
+	}
+
+	public int getGid() {
+		return gid;
 	}
 }
