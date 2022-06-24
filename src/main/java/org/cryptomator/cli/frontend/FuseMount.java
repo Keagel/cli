@@ -37,6 +37,7 @@ public class FuseMount {
 			String[] flags = new String[]{
 					"-ouid=" + this.uid,
 					"-ogid=" + this.gid,
+					"-oallow_other",
 					"-oauto_unmount"
 			};
 
